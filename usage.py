@@ -20,7 +20,7 @@ if __name__ == '__main__':
     schedule = 'cosine'
     lr = 0.01
     niter = 300
-    max_frames = 10
+    max_frames = 24
 
     model = load_model(model_path, device)
     # load_images can take a list of images or a directory
@@ -84,7 +84,7 @@ if __name__ == '__main__':
     # visualize a few matches
     import numpy as np
     from matplotlib import pyplot as pl
-    n_viz = 10
+    n_viz = 50
     match_idx_to_viz = np.round(np.linspace(0, num_matches-1, n_viz)).astype(int)
     viz_matches_im0, viz_matches_im1 = matches_im0[match_idx_to_viz], matches_im1[match_idx_to_viz]
 
