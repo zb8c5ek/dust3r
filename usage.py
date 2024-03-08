@@ -6,7 +6,7 @@ Email: xuanli(dot)chen(at)icloud.com
 LinkedIn: https://be.linkedin.com/in/xuanlichen
 """
 import os
-os.environ['KMP_DUPLICATE_LIB_OK']='TRUE'
+os.environ['KMP_DUPLICATE_LIB_OK'] = 'TRUE'
 from pathlib import Path
 from dust3r.inference import inference, load_model
 from dust3r.utils.image import load_images
@@ -20,13 +20,21 @@ if __name__ == '__main__':
     schedule = 'cosine'
     lr = 0.01
     niter = 300
+    max_frames = 10
 
     model = load_model(model_path, device)
     # load_images can take a list of images or a directory
     # images = load_images(['croco/assets/Chateau1.png', 'croco/assets/Chateau2.png'], size=512)
-    # dp_images = Path(r"E:\psd_data\data_calib_20231129\work_dir_20240219-0.050\traj_analyzer0.050\length_0010_0020_num_252\segment_0000\cam_0_30_degree")
-    dp_images = Path(r"E:\psd_data\data_calib_20231129\work_dir_20240219-0.050\traj_analyzer0.050\length_0020_0030_num_88\segment_0001\30+120-undistort")
-    images = load_images(dp_images.resolve().as_posix(), size=512)
+    dp_images = Path(r"E:\psd_data\data_calib_20231129\work_dir_20240219-0.050\traj_analyzer0.050\length_0010_0020_num_252\segment_0000\cam_0_30_degree")
+    # dp_images = Path(r"E:\psd_data\data_calib_20231129\work_dir_20240219-0.050\traj_analyzer0.050\length_0020_0030_num_88\segment_0001\30+120-undistort")
+    # dp_images = Path(r"E:\psd_data\data_calib_20231129\work_dir_20240219-0.050\traj_analyzer0.050\length_0020_0030_num_88\segment_0004\undistort_120_degree")
+    # Select Random Sample Maximum 40 Images for the 3D Reconstruction
+    fps_images = list(dp_images.glob('*.jpg'))
+    if len(fps_images) > max_frames:
+        import random
+        fps_images = random.sample(fps_images, max_frames)
+    fns_images = [fp.as_posix() for fp in fps_images]
+    images = load_images(fns_images, size=512)
     pairs = make_pairs(images, scene_graph='complete', prefilter=None, symmetrize=True)
     output = inference(pairs, model, device, batch_size=batch_size)
 
